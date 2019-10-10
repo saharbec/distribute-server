@@ -1,5 +1,5 @@
 import React, { Fragment, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 // import axios from 'axios';
 import PropTypes from 'prop-types';
@@ -9,7 +9,7 @@ import PropTypes from 'prop-types';
 import { setAlert } from '../../actions/alert';
 import { register } from '../../actions/auth';
 
-const SignUp = ({ setAlert, register, history }) => {
+const SignUp = ({ setAlert, register, history, isAuthenticated }) => {
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -43,6 +43,10 @@ const SignUp = ({ setAlert, register, history }) => {
             }
         }
     };
+
+    if (isAuthenticated) {
+        return <Redirect to='/entry' />;
+    }
 
     return (
         <Fragment>
@@ -102,10 +106,15 @@ const SignUp = ({ setAlert, register, history }) => {
 
 SignUp.propTypes = {
     setAlert: PropTypes.func.isRequired,
-    register: PropTypes.func.isRequired
+    register: PropTypes.func.isRequired,
+    isAuthenticated: PropTypes.bool
 };
 
+const mapStateToProps = state => ({
+    isAuthenticated: state.auth.isAuthenticated
+});
+
 export default connect(
-    null,
+    mapStateToProps,
     { setAlert, register }
 )(SignUp);
